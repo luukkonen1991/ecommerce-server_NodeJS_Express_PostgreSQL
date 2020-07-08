@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-const Sequelize = require('sequelize');
+const { Sequelize } = require('sequelize');
 
 // LOAD ENV VARS
 dotenv.config({ path: '../config/config.env' });
