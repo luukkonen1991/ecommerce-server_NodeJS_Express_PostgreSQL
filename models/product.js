@@ -1,26 +1,31 @@
-const { Sequelize } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 const sequelize = require('../utils/database');
 
 const Product = sequelize.define('product', {
   id: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true
   },
   title: {
-    type: Sequelize.STRING(50),
+    type: DataTypes.STRING,
     allowNull: false
   },
   description: {
-    type: Sequelize.STRING(255),
+    type: DataTypes.STRING,
     allowNull: false
   },
   price: {
-    type: Sequelize.DOUBLE,
+    type: DataTypes.DOUBLE,
     allowNull: false
   }
 });
+
+Product.sync()
+  .then(() => {
+    console.log('CREATED products TABle');
+  });
 
 module.exports = Product;

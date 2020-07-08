@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
+// const sequelize = require('./utils/database');
 
 // LOAD ENV VARS
 dotenv.config({ path: './config/config.env' });
@@ -20,10 +21,6 @@ if (process.env.NODE_ENV === 'development') {
 
 // ENABLE CORS
 app.use(cors());
-
-
-app.get('/', (req, res) => res.send('HELLO WORLD'));
-
 
 const PORT = process.env.PORT || 5000;
 
