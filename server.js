@@ -9,6 +9,9 @@ const cors = require('cors');
 // LOAD ENV VARS
 dotenv.config({ path: './config/config.env' });
 
+// ROUTE FILES
+const products = require('./routes/products');
+
 const app = express();
 
 // BODY PARSER
@@ -21,6 +24,9 @@ if (process.env.NODE_ENV === 'development') {
 
 // ENABLE CORS
 app.use(cors());
+
+// MOUNT ROUTES
+app.use('/api/v1/products', products);
 
 const PORT = process.env.PORT || 5000;
 
