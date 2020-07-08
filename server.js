@@ -4,10 +4,13 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-// const sequelize = require('./utils/database');
+const sequelize = require('./utils/database');
 
 // LOAD ENV VARS
 dotenv.config({ path: './config/config.env' });
+
+// MODELS
+// const Product = require('./models/product');
 
 // ROUTE FILES
 const products = require('./routes/products');
@@ -27,6 +30,11 @@ app.use(cors());
 
 // MOUNT ROUTES
 app.use('/api/v1/products', products);
+
+// SYNC MODELS
+sequelize.sync().then(() => {
+  console.log('SYNC WAS SUCCESSFUL');
+});
 
 const PORT = process.env.PORT || 5000;
 

@@ -23,9 +23,4 @@ const Product = sequelize.define('product', {
   }
 });
 
-Product.sync()
-  .then(() => {
-    console.log('CREATED products TABle');
-  });
-
 module.exports = Product;
