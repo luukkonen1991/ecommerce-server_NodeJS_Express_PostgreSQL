@@ -6,12 +6,22 @@ const Product = require('../models/product');
 //@route      GET /api/v1/products
 //@access     Public
 exports.getProducts = asyncHandler(async (req, res, next) => {
-  const products = await Product.findAll();
+  // console.log(req.query);
+  // if (req.query) {
+  //   const products = await Product.findAll({where: {
 
-  res
-    .status(200)
-    .json({ success: true, count: products.length, data: products });
+  //   }})
+  // }
+  // const products = await Product.findAll();
+
+  // res
+  //   .status(200)
+  //   .json({ success: true, count: products.length, data: products });
+  res.status(200).json(res.advancedResults);
 });
+
+
+
 
 //@desc       Create product
 //@route      POST /api/v1/products
