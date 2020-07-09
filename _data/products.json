@@ -1,0 +1,32 @@
+[
+	{
+		"title": "title",
+		"description": "description",
+		"price": 11.95
+	},
+	{
+		"title": "title2",
+		"description": "description2",
+		"price": 19.95
+	},
+	{
+		"title": "title3",
+		"description": "description3",
+		"price": 12.95
+	},
+	{
+		"title": "title4",
+		"description": "description4",
+		"price": 24.95
+	},
+	{
+		"title": "title5",
+		"description": "description5",
+		"price": 34.95
+	},
+	{
+		"title": "title6",
+		"description": "description6",
+		"price": 44.95
+	}
+]
