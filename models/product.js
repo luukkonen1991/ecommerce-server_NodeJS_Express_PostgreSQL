@@ -20,6 +20,10 @@ const Product = sequelize.define('product', {
   price: {
     type: DataTypes.DOUBLE,
     allowNull: false
+  },
+  category: {
+    type: DataTypes.ENUM('t-shirts', 'shirts', 'pants', 'shoes'),
+    allowNull: false
   }
 });
 

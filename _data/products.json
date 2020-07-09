@@ -2,31 +2,37 @@
 	{
 		"title": "title",
 		"description": "description",
-		"price": 11.95
+		"price": 11.95,
+		"category": "t-shirts"
 	},
 	{
 		"title": "title2",
 		"description": "description2",
-		"price": 19.95
+		"price": 19.95,
+		"category": "t-shirts"
 	},
 	{
 		"title": "title3",
 		"description": "description3",
-		"price": 12.95
+		"price": 12.95,
+		"category": "t-shirts"
 	},
 	{
 		"title": "title4",
 		"description": "description4",
-		"price": 24.95
+		"price": 24.95,
+		"category": "shirts"
 	},
 	{
 		"title": "title5",
 		"description": "description5",
-		"price": 34.95
+		"price": 34.95,
+		"category": "pants"
 	},
 	{
 		"title": "title6",
 		"description": "description6",
-		"price": 44.95
+		"price": 44.95,
+		"category": "shoes"
 	}
 ]
