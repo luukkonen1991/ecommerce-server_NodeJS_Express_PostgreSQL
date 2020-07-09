@@ -1,17 +1,7 @@
 const fs = require('fs');
-const { Sequelize } = require('sequelize');
 const colors = require('colors');
-const dotenv = require('dotenv');
 
-// LOAD ENV VARS
-dotenv.config({ path: './config/config.env' });
-
-// DB CONNECT
-// const sequelize = require('./utils/database');
-// const sequelize = new Sequelize(process.env.PSQL_DATABASE, process.env.PSQL_USERNAME, process.env.PSQL_PASSWORD, {
-//   host: process.env.PSQL_HOST,
-//   dialect: 'postgres'
-// });
+const sequelize = require('./utils/database');
 
 // LOAD MODELS
 const Product = require('./models/product');
@@ -19,9 +9,17 @@ const Product = require('./models/product');
 // READ JSON FILES
 const products = JSON.parse(fs.readFileSync(`${__dirname}/_data/products.json`, 'utf-8'));
 
+// SYNC
+// sequelize.sync().then(() => {
+//   console.log('SYNC WAS SUCCESSFUL');
+// });
+
 // IMPORT INTO DB
 const importData = async () => {
   try {
+    await sequelize.sync({ force: true }).then(() => {
+      console.log('SYNC WAS SUCCESSFUL'.green.inverse);
+    });
     await Product.bulkCreate(products);
     console.log('Data imported...'.green.inverse);
     process.exit();
