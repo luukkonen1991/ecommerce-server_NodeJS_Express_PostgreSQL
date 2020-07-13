@@ -5,11 +5,13 @@ const sequelize = require('./utils/database');
 
 // LOAD MODELS
 const Product = require('./models/product');
-const Category = require('./models/categories');
+const Category = require('./models/category');
+const User = require('./models/user');
 
 // READ JSON FILES
 const products = JSON.parse(fs.readFileSync(`${__dirname}/_data/products.json`, 'utf-8'));
 const categories = JSON.parse(fs.readFileSync(`${__dirname}/_data/categories.json`, 'utf-8'));
+const users = JSON.parse(fs.readFileSync(`${__dirname}/_data/users.json`, 'utf-8'));
 
 // RELATIONS
 Category.hasMany(Product);
@@ -23,6 +25,7 @@ const importData = async () => {
     });
     await Category.bulkCreate(categories);
     await Product.bulkCreate(products);
+    await User.bulkCreate(users);
     console.log('Data imported...'.green.inverse);
     process.exit();
   } catch (error) {
@@ -33,8 +36,10 @@ const importData = async () => {
 // DELETE FROM DB
 const deleteData = async () => {
   try {
-    await Product.drop();
-    await Category.drop();
+    await sequelize.sync({ force: true });
+    // await Product.drop();
+    // await Category.drop();
+    // await User.drop();
     console.log('Data destroyed...'.red.inverse);
     process.exit();
   } catch (error) {
