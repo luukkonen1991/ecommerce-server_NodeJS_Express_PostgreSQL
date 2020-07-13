@@ -1,7 +1,8 @@
 const { DataTypes, Sequelize } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const crypto = require('crypto-js');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+
 
 const sequelize = require('../utils/database');
 
@@ -27,13 +28,39 @@ const User = sequelize.define('user', {
   password: {
     type: DataTypes.STRING,
     allowNull: false
-  }
+  },
+  resetPasswordToken: DataTypes.STRING,
+  resetPasswordExpire: DataTypes.DATE
 });
 
 User.beforeCreate(async (user) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
 });
+
+// Sign JWT and return
+User.prototype.getSignedJwtToken = (user) => {
+  return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
+};
+
+//Match user entered password to hashed password in db
+User.prototype.matchPassword = async (user, enteredPassword) => {
+  return await bcrypt.compare(enteredPassword, user.password);
+};
+
+// Generate and hash password token
+User.prototype.getResetPasswordToken = (user) => {
+  const resetToken = crypto.randomBytes(20).toString('hex');
+
+  // Hash token and set to resetPasswordToken field
+  user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+  // Set exipre
+  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 mins
+
+  return resetToken;
+};
+
 
 // For db seeder
 User.beforeBulkCreate(async (users) => {
