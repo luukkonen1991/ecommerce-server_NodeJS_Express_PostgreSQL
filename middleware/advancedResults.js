@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 
 const advancedResults = (model) => async (req, res, next) => {
+
   let query = {
     where: {
     }
@@ -26,7 +27,7 @@ const advancedResults = (model) => async (req, res, next) => {
     query.where.price = { [Op.lt]: req.query.price };
   }
 
-  finalQuery = model.findAll(query);
+  let finalQuery = model.findAll(query);
 
   const results = await finalQuery;
 

@@ -3,6 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const errorHandler = require('./middleware/error');
 
 const sequelize = require('./utils/database');
 
@@ -35,6 +36,8 @@ app.use('/api/v1/products', products);
 sequelize.sync().then(() => {
   console.log('SYNC WAS SUCCESSFUL');
 });
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
