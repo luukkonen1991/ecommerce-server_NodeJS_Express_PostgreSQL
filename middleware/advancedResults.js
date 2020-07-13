@@ -15,8 +15,8 @@ const advancedResults = (model) => async (req, res, next) => {
   // // Loop over removeFields and delete em from reqQuery
   // removeFields.forEach(param => delete reqQuery[param]);
 
-  if (req.query.category) {
-    query.where.category = req.query.category;
+  if (req.query.categoryId) {
+    query.where.categoryId = req.query.categoryId;
   }
 
   if (req.query.price && req.query.gt) {

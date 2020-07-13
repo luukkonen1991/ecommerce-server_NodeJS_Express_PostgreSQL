@@ -3,36 +3,36 @@
 		"title": "title",
 		"description": "description",
 		"price": 11.95,
-		"category": "t-shirts"
+		"categoryId": "001baa5b-f4ec-47b7-8a17-584e03741604"
 	},
 	{
 		"title": "title2",
 		"description": "description2",
 		"price": 19.95,
-		"category": "t-shirts"
+		"categoryId": "001baa5b-f4ec-47b7-8a17-584e03741604"
 	},
 	{
 		"title": "title3",
 		"description": "description3",
 		"price": 12.95,
-		"category": "t-shirts"
+		"categoryId": "001baa5b-f4ec-47b7-8a17-584e03741604"
 	},
 	{
 		"title": "title4",
 		"description": "description4",
 		"price": 24.95,
-		"category": "shirts"
+		"categoryId": "9b4ace8b-7b68-47af-9472-db84a6f89423"
 	},
 	{
 		"title": "title5",
 		"description": "description5",
 		"price": 34.95,
-		"category": "pants"
+		"categoryId": "e469cb1c-422c-4343-a7b6-2d59eb33cad0"
 	},
 	{
 		"title": "title6",
 		"description": "description6",
 		"price": 44.95,
-		"category": "shoes"
+		"categoryId": "58718709-76b7-4dcf-9183-4f4b3eeb68e3"
 	}
 ]

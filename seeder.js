@@ -5,14 +5,15 @@ const sequelize = require('./utils/database');
 
 // LOAD MODELS
 const Product = require('./models/product');
-// const Category = require('./models/category');
+const Category = require('./models/categories');
 
 // READ JSON FILES
 const products = JSON.parse(fs.readFileSync(`${__dirname}/_data/products.json`, 'utf-8'));
-// const categories = JSON.parse(fs.readFileSync(`${__dirname}/_data/categories.json`, 'utf-8'));
+const categories = JSON.parse(fs.readFileSync(`${__dirname}/_data/categories.json`, 'utf-8'));
 
 // RELATIONS
-
+Category.hasMany(Product);
+Product.belongsTo(Category);
 
 // IMPORT INTO DB
 const importData = async () => {
@@ -20,6 +21,7 @@ const importData = async () => {
     await sequelize.sync({ force: true }).then(() => {
       console.log('SYNC WAS SUCCESSFUL'.green.inverse);
     });
+    await Category.bulkCreate(categories);
     await Product.bulkCreate(products);
     console.log('Data imported...'.green.inverse);
     process.exit();
@@ -32,6 +34,7 @@ const importData = async () => {
 const deleteData = async () => {
   try {
     await Product.drop();
+    await Category.drop();
     console.log('Data destroyed...'.red.inverse);
     process.exit();
   } catch (error) {
