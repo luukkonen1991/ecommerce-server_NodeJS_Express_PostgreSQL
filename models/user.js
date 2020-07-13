@@ -39,17 +39,17 @@ User.beforeCreate(async (user) => {
 });
 
 // Sign JWT and return
-User.prototype.getSignedJwtToken = (user) => {
-  return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
+User.prototype.getSignedJwtToken = function () {
+  return jwt.sign({ id: this.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
 };
 
 //Match user entered password to hashed password in db
-User.prototype.matchPassword = async (user, enteredPassword) => {
-  return await bcrypt.compare(enteredPassword, user.password);
+User.prototype.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
 // Generate and hash password token
-User.prototype.getResetPasswordToken = (user) => {
+User.prototype.getResetPasswordToken = function () {
   const resetToken = crypto.randomBytes(20).toString('hex');
 
   // Hash token and set to resetPasswordToken field

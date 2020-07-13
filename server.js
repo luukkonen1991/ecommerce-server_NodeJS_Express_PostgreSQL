@@ -15,6 +15,7 @@ dotenv.config({ path: './config/config.env' });
 
 // ROUTE FILES
 const products = require('./routes/products');
+const auth = require('./routes/auth');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(cors());
 
 // MOUNT ROUTES
 app.use('/api/v1/products', products);
+app.use('/api/v1/auth', auth);
 
 // SYNC MODELS
 sequelize.sync().then(() => {
