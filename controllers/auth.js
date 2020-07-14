@@ -35,6 +35,8 @@ exports.login = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({
     where: {
       email: email,
+    }, attributes: {
+      include: ['password']
     }
   });
   if (!user) {

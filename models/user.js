@@ -35,7 +35,13 @@ const User = sequelize.define('user', {
     allowNull: false
   },
   resetPasswordToken: DataTypes.STRING,
-  resetPasswordExpire: DataTypes.DATE
+  resetPasswordExpire: DataTypes.DATE,
+}, {
+  defaultScope: {
+    attributes: {
+      exclude: ['password']
+    }
+  }
 });
 
 User.beforeCreate(async (user) => {
