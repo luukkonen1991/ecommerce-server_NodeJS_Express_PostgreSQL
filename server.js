@@ -3,6 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 
 const sequelize = require('./utils/database');
@@ -21,6 +22,9 @@ const app = express();
 
 // BODY PARSER
 app.use(express.json());
+
+// Cookie parser
+app.use(cookieParser());
 
 // DEV LOGGING MIDDLEWARE
 if (process.env.NODE_ENV === 'development') {
