@@ -25,11 +25,11 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 //@desc       Create product
 //@route      POST /api/v1/products
-//@access     Public
+//@access     Private
 exports.createProduct = asyncHandler(async (req, res, next) => {
+
   const { title, description, category, price } = req.body;
   const product = await Product.create({
     title: title,
