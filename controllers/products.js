@@ -43,8 +43,8 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
   });
 });
 
-//@desc       Delete location
-//@route      Delete /api/v1/locations/:id
+//@desc       Delete product
+//@route      Delete /api/v1/products/:id
 //@access     Private
 exports.deleteProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findByPk(req.params.id);
@@ -53,11 +53,38 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Product not found with id of ${req.params.id}`, 404));
   }
 
-  await product.destroy();
+  await Product.destroy({
+    where: {
+      id: req.params.id
+    }
+  });
 
   res.status(200).json({
     success: true,
     data: {}
   });
+});
 
+//@desc       Update product
+//@route      PUT /api/v1/products/:id
+//@access     Private
+exports.updateProduct = asyncHandler(async (req, res, next) => {
+  let product = await Product.findByPk(req.params.id);
+
+  if (!product) {
+    return next(new ErrorResponse(`Product not found with id of ${req.params.id}`, 404));
+  }
+
+  let columnsToUpdate = Object.keys(req.body);
+  for (val of columnsToUpdate) {
+    product[val] = req.body[val];
+    await product.save();
+  }
+
+  // product = await Product.findByPk(req.params.id);
+
+  res.status(200).json({
+    success: true,
+    data: product
+  });
 });

@@ -3,7 +3,8 @@ const {
   getProducts,
   getProduct,
   createProduct,
-  deleteProduct
+  deleteProduct,
+  updateProduct
 } = require('../controllers/products');
 
 // Model
@@ -21,6 +22,7 @@ router.route('/')
 
 router.route('/:id')
   .get(getProduct)
-  .delete(protect, authorize('publisher', 'admin'), deleteProduct);
+  .delete(protect, authorize('publisher', 'admin'), deleteProduct)
+  .put(protect, authorize('publisher', 'admin'), updateProduct);
 
 module.exports = router;
