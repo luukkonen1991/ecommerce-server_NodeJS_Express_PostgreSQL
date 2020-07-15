@@ -42,3 +42,22 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
     data: product
   });
 });
+
+//@desc       Delete location
+//@route      Delete /api/v1/locations/:id
+//@access     Private
+exports.deleteProduct = asyncHandler(async (req, res, next) => {
+  const product = await Product.findByPk(req.params.id);
+
+  if (!product) {
+    return next(new ErrorResponse(`Product not found with id of ${req.params.id}`, 404));
+  }
+
+  await product.destroy();
+
+  res.status(200).json({
+    success: true,
+    data: {}
+  });
+
+});

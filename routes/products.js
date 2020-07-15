@@ -1,5 +1,10 @@
 const express = require('express');
-const { getProducts, getProduct, createProduct } = require('../controllers/products');
+const {
+  getProducts,
+  getProduct,
+  createProduct,
+  deleteProduct
+} = require('../controllers/products');
 
 // Model
 const Product = require('../models/product');
@@ -15,6 +20,7 @@ router.route('/')
   .post(protect, authorize('publisher', 'admin'), createProduct);
 
 router.route('/:id')
-  .get(getProduct);
+  .get(getProduct)
+  .delete(protect, authorize('publisher', 'admin'), deleteProduct);
 
 module.exports = router;
