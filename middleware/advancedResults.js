@@ -1,4 +1,6 @@
 const { Op } = require('sequelize');
+const TargetGroup = require('../models/target_group');
+const Product = require('../models/product');
 
 const advancedResults = (model) => async (req, res, next) => {
 
@@ -7,6 +9,7 @@ const advancedResults = (model) => async (req, res, next) => {
     }
   };
 
+
   // // Copy req.query
   // const reqQuery = { ...req.query };
 
@@ -14,6 +17,10 @@ const advancedResults = (model) => async (req, res, next) => {
   // const removeFields = [];
   // // Loop over removeFields and delete em from reqQuery
   // removeFields.forEach(param => delete reqQuery[param]);
+
+  if (req.query.targetGroupId) {
+    query.where.targetGroupId = req.query.targetGroupId;
+  }
 
   if (req.query.categoryId) {
     query.where.categoryId = req.query.categoryId;
