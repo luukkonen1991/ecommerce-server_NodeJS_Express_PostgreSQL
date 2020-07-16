@@ -2,7 +2,7 @@ const { DataTypes, Sequelize } = require('sequelize');
 
 const sequelize = require('../utils/database');
 
-const TargetGroup = sequelize.define('targetGroup', {
+const TargetGroup = sequelize.define('target_group', {
   id: {
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
