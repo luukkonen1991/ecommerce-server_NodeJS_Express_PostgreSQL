@@ -78,8 +78,9 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   let columnsToUpdate = Object.keys(req.body);
   for (val of columnsToUpdate) {
     product[val] = req.body[val];
-    await product.save();
   }
+  // test save
+  await product.save();
 
   // product = await Product.findByPk(req.params.id);
 
