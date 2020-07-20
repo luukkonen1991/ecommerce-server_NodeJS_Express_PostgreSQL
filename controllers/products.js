@@ -93,6 +93,6 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 //@desc       Upload photo for product
 //@route      PUT /api/v1/products/:id/photo
 //@access     Private
-export.productPhotoUpload = asyncHandler(async (req, res, next) => {
+exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
 
 });
