@@ -20,6 +20,9 @@ const Product = sequelize.define('product', {
   price: {
     type: DataTypes.DOUBLE,
     allowNull: false
+  },
+  imgUrl: {
+    type: DataTypes.STRING,
   }
   // ,
   // category: {

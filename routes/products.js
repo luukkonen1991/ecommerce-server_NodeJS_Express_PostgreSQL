@@ -4,7 +4,8 @@ const {
   getProduct,
   createProduct,
   deleteProduct,
-  updateProduct
+  updateProduct,
+  productPhotoUpload
 } = require('../controllers/products');
 
 // Model
@@ -24,5 +25,8 @@ router.route('/:id')
   .get(getProduct)
   .delete(protect, authorize('publisher', 'admin'), deleteProduct)
   .put(protect, authorize('publisher', 'admin'), updateProduct);
+
+router.route('/:id/photo')
+  .put(protect, authorize('publisher', 'admin'), productPhotoUpload);
 
 module.exports = router;
