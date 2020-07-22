@@ -1,4 +1,4 @@
-// const path = require('path');
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const fileupload = require('express-fileupload');
@@ -34,6 +34,9 @@ if (process.env.NODE_ENV === 'development') {
 
 // File uploading
 app.use(fileupload());
+
+// Set static folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ENABLE CORS
 app.use(cors());
