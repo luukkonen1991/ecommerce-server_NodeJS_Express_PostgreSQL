@@ -125,7 +125,7 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
       console.error(err);
       return next(new ErrorResponse(`Problem with file upload`, 500));
     }
-    Product.imgUrl = file.name;
+    product.imgUrl = file.name;
     await product.save();
 
     res.status(200).json({
