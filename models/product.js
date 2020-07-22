@@ -21,8 +21,11 @@ const Product = sequelize.define('product', {
     type: DataTypes.DOUBLE,
     allowNull: false
   },
-  imgUrl: {
+  main_img: {
     type: DataTypes.STRING,
+  },
+  product_imgs: {
+    type: DataTypes.ARRAY(DataTypes.STRING)
   }
   // ,
   // category: {

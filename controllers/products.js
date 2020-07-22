@@ -1,7 +1,8 @@
-const path = require('path');
+// const path = require('path');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Product = require('../models/product');
+const sequelize = require('../utils/database');
 
 
 //@desc       Get all products
@@ -103,34 +104,101 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
   }
 
   if (!req.files) {
-    return next(new ErrorResponse(`Please upload a file`, 400));
+    return next(new ErrorResponse(`Please upload a file(s)`, 400));
   }
+  let keys = Object.keys(req.files);
+  console.log(keys, '[ObjectKeys]');
+  // const mainImage = req.files.main;
 
-  const file = req.files.file;
 
-  // Make sure the image is a photo
-  if (!file.mimetype.startsWith('image')) {
-    return next(new ErrorResponse(`Please upload an image file`, 400));
-  }
 
-  // Check filesize
-  if (file.size > process.env.MAX_FILE_UPLOAD) {
-    return next(new ErrorResponse(`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`, 400));
-  }
+  for (key of keys) {
+    let productsArr = [];
+    let counter = keys.indexOf(key);
+    console.log(typeof counter, '[TYPEOF COUNTER]');
+    console.log(counter, '[----------------------counter-----------------]');
+    // console.log(req.files[key].name, '[FILENAME]');
+    let img = req.files[key];
+    console.log(img, '[BEGINNING]');
 
-  // Create custom filename
-  file.name = `photo_${product.id}${path.parse(file.name).ext}`;
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
-    if (err) {
-      console.error(err);
-      return next(new ErrorResponse(`Problem with file upload`, 500));
+    // Make sure the image(s) are photos
+    if (!img.mimetype.startsWith('image')) {
+      return next(new ErrorResponse(`File ${img.name} is not an image file`, 400));
     }
-    product.imgUrl = file.name;
-    await product.save();
 
-    res.status(200).json({
-      success: true,
-      data: file.name
+    // Check filesize
+    if (img.size > process.env.MAX_FILE_UPLOAD) {
+      return next(new ErrorResponse(`Image ${img.name} is larger than supported file size: ${process.env.MAX_FILE_UPLOAD}`, 400));
+    }
+
+    // Create custom fileName
+    // mainImage.name = `photo_${product.id}${path.parse(mainImage.name).ext}`;
+    img.name = `photo_${product.id}_${img.name}`;
+    // console.log(img.name, '[NEWNAME]');
+    img.mv(`${process.env.FILE_UPLOAD_PATH}/${img.name}`, async err => {
+      if (err) {
+        console.error(err);
+        return next(new ErrorResponse(`Problem with file(s) upload`, 500));
+      }
+      // if (img === 'main') {
+      // console.log(img, '[IMAGE BEFORE SAVE]');
+      // imagesArr.push(img.name);
+      // console.log(imagesArr);
+      // product.productImgUrls = imagesArr;
+      // product.mainImgUrl = img.name;
+      // } else {
+      // product.update({ 'productImgUrls:' sequelize.fn });
+      // product.productImgUrls.push(req.files[key].name);
+      // }
+      // await product.save();
     });
+
+    if (counter === 0) {
+      product.main_img = img.name;
+      await product.save();
+    }
+    if (counter > 0) {
+      product.update({
+        product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
+      });
+      await product.save();
+    }
+
+  }
+
+  res.status(200).json({
+    success: true,
+    mainIMG: product.main_img,
+    data: product.product_imgs
   });
+
+  // jatka tästä
+
+  // ------------------------------------------------------
+
+  // // Make sure the image is a photo
+  // if (!mainImage.mimetype.startsWith('image')) {
+  //   return next(new ErrorResponse(`Please upload an image file(s)`, 400));
+  // }
+
+  // // Check filesize
+  // if (mainImage.size > process.env.MAX_FILE_UPLOAD) {
+  //   return next(new ErrorResponse(`Please upload image(s) less than ${process.env.MAX_FILE_UPLOAD}`, 400));
+  // }
+
+  // // Create custom filename
+  // mainImage.name = `photo_${product.id}${path.parse(mainImage.name).ext}`;
+  // mainImage.mv(`${process.env.FILE_UPLOAD_PATH}/${mainImage.name}`, async err => {
+  //   if (err) {
+  //     console.error(err);
+  //     return next(new ErrorResponse(`Problem with file(s) upload`, 500));
+  //   }
+  //   product.mainImgUrl = mainImage.name;
+  //   await product.save();
+
+  //   res.status(200).json({
+  //     success: true,
+  //     data: mainImage.name
+  //   });
+  // });
 });
