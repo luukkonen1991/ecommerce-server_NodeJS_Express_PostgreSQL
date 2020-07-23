@@ -108,8 +108,15 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Please upload a file(s)`, 400));
   }
 
-  // Remove old photos from db/uploads if not included in new request
-  if (product.product_imgs) {
+
+
+  let keys = Object.keys(req.files);
+  console.log(req.files, '[REQUEST FILES]');
+  console.log(keys, '[ObjectKeys]');
+  // const mainImage = req.files.main;
+
+  // Remove old product photos from db/uploads if req.files includes a new ones
+  if (product.product_imgs && keys.includes('product')) {
     const oldPhotos = Object.values(product.product_imgs);
     for (oldPhoto of oldPhotos) {
       let photoPath = `${process.env.FILE_UPLOAD_PATH}/${oldPhoto}`;
@@ -120,18 +127,23 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
     console.log(product.product_imgs);
   }
 
-  let keys = Object.keys(req.files);
-  console.log(req.files, '[REQUEST FILES]');
-  console.log(keys, '[ObjectKeys]');
-  // const mainImage = req.files.main;
-
-
+  // Remove old main_img from db/uploads if req.files includes a new one
+  if (product.main_img && keys.includes('main')) {
+    const oldPhoto = product.main_img;
+    let photoPath = `${process.env.FILE_UPLOAD_PATH}/${oldPhoto}`;
+    fs.unlinkSync(photoPath);
+    // console.log(oldPhotos, '[Old photos]');
+    // product.product_imgs = [];
+    // console.log(product.product_imgs);
+  }
 
   for (key of keys) {
+    console.log(key, '[KEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY]');
+    console.log(typeof key, '[TYPE]');
     let counter = keys.indexOf(key);
     console.log(counter, '[----------------------counter-----------------]');
     let img = req.files[key];
-    console.log(img, '[BEGINNING]');
+    console.log(img, '[BEGINNING-------------------------------------------]');
 
     // Make sure the image(s) are photos
     if (!img.mimetype.startsWith('image')) {
