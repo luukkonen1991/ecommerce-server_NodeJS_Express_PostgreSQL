@@ -172,7 +172,35 @@ exports.productProductPhotosUpload = asyncHandler(async (req, res, next) => {
     if (photo.size > process.env.MAX_FILE_UPLOAD) {
       return next(new ErrorResponse(`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`, 400));
     }
+
+    // Create custom filename
+    photo.name = `photo_${product.id}${photo.name}`;
+
+    // remove old product photos if existing
+    if (product.product_imgs) {
+      const oldPhotos = Object.values(product.product_imgs);
+      for (oldPhoto of oldPhotos) {
+        let deletePath = `${process.env.FILE_UPLOAD_PATH}/${oldPhoto}`;
+        fs.unlinkSync(deletePath);
+      }
+      product.product_imgs = [];
+    }
+
+    photo.mv(`${process.env.FILE_UPLOAD_PATH}/${photo.name}`, async err => {
+      if (err) {
+        console.error(err);
+        return next(new ErrorResponse(`Problem with file(s) upload`, 500));
+      }
+      product.update({
+        product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
+      });
+    });
   }
+
+  res.status(200).json({
+    success: true,
+    data: product.product_imgs
+  });
 
 });;
 
@@ -236,26 +264,26 @@ exports.productProductPhotosUpload = asyncHandler(async (req, res, next) => {
 //       return next(new ErrorResponse(`Image ${img.name} is larger than supported file size: ${process.env.MAX_FILE_UPLOAD}`, 400));
 //     }
 
-//     // Create custom fileName
-//     // mainImage.name = `photo_${product.id}${path.parse(mainImage.name).ext}`;
-//     img.name = `photo_${product.id}_${img.name}`;
-//     // console.log(img.name, '[NEWNAME]');
-//     img.mv(`${process.env.FILE_UPLOAD_PATH}/${img.name}`, async err => {
-//       if (err) {
-//         console.error(err);
-//         return next(new ErrorResponse(`Problem with file(s) upload`, 500));
-//       }
-//       if (counter === 0) {
-//         product.main_img = img.name;
-//         await product.save();
-//       } else {
-//         console.log(img.name, '[IMGNAME_____________________________________________________]');
-//         product.update({
-//           product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
-//         });
-//       }
-//     });
-//   }
+    // Create custom fileName
+    // mainImage.name = `photo_${product.id}${path.parse(mainImage.name).ext}`;
+  //   img.name = `photo_${product.id}_${img.name}`;
+  //   // console.log(img.name, '[NEWNAME]');
+  //   img.mv(`${process.env.FILE_UPLOAD_PATH}/${img.name}`, async err => {
+  //     if (err) {
+  //       console.error(err);
+  //       return next(new ErrorResponse(`Problem with file(s) upload`, 500));
+  //     }
+  //     if (counter === 0) {
+  //       product.main_img = img.name;
+  //       await product.save();
+  //     } else {
+  //       console.log(img.name, '[IMGNAME_____________________________________________________]');
+  //       product.update({
+  //         product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
+  //       });
+  //     }
+  //   });
+  // }
 
 //   res.status(200).json({
 //     success: true,
