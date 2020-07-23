@@ -1,4 +1,5 @@
 // const path = require('path');
+const fs = require('fs');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Product = require('../models/product');
@@ -106,18 +107,29 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
   if (!req.files) {
     return next(new ErrorResponse(`Please upload a file(s)`, 400));
   }
+
+  // Remove old photos from db/uploads if not included in new request
+  if (product.product_imgs) {
+    const oldPhotos = Object.values(product.product_imgs);
+    for (oldPhoto of oldPhotos) {
+      let photoPath = `${process.env.FILE_UPLOAD_PATH}/${oldPhoto}`;
+      fs.unlinkSync(photoPath);
+    }
+    console.log(oldPhotos, '[Old photos]');
+    product.product_imgs = [];
+    console.log(product.product_imgs);
+  }
+
   let keys = Object.keys(req.files);
+  console.log(req.files, '[REQUEST FILES]');
   console.log(keys, '[ObjectKeys]');
   // const mainImage = req.files.main;
 
 
 
   for (key of keys) {
-    let productsArr = [];
     let counter = keys.indexOf(key);
-    console.log(typeof counter, '[TYPEOF COUNTER]');
     console.log(counter, '[----------------------counter-----------------]');
-    // console.log(req.files[key].name, '[FILENAME]');
     let img = req.files[key];
     console.log(img, '[BEGINNING]');
 
@@ -140,34 +152,20 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
         console.error(err);
         return next(new ErrorResponse(`Problem with file(s) upload`, 500));
       }
-      // if (img === 'main') {
-      // console.log(img, '[IMAGE BEFORE SAVE]');
-      // imagesArr.push(img.name);
-      // console.log(imagesArr);
-      // product.productImgUrls = imagesArr;
-      // product.mainImgUrl = img.name;
-      // } else {
-      // product.update({ 'productImgUrls:' sequelize.fn });
-      // product.productImgUrls.push(req.files[key].name);
-      // }
-      // await product.save();
+      if (counter === 0) {
+        product.main_img = img.name;
+        await product.save();
+      } else {
+        console.log(img.name, '[IMGNAME_____________________________________________________]');
+        product.update({
+          product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
+        });
+      }
     });
-
-    if (counter === 0) {
-      product.main_img = img.name;
-      await product.save();
-    } else {
-      console.log(img.name, '[IMGNAME_____________________________________________________]');
-      product.update({
-        product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
-      });
-    }
   }
 
   res.status(200).json({
     success: true,
-    mainIMG: product.main_img,
-    data: product.product_imgs
   });
 
   // jatka tästä
