@@ -5,7 +5,8 @@ const {
   createProduct,
   deleteProduct,
   updateProduct,
-  productMainPhotoUpload
+  productMainPhotoUpload,
+  productSecondaryPhotosUpload
 } = require('../controllers/products');
 
 // Model
@@ -28,5 +29,8 @@ router.route('/:id')
 
 router.route('/:id/mainphoto')
   .put(protect, authorize('publisher', 'admin'), productMainPhotoUpload);
+
+router.route('/:id/productphotos')
+  .put(protect, authorize('publisher', 'admin'), productSecondaryPhotosUpload);
 
 module.exports = router;

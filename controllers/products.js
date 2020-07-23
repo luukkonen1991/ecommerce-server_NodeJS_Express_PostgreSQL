@@ -4,7 +4,6 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Product = require('../models/product');
 const sequelize = require('../utils/database');
-const { findByPk } = require('../models/product');
 
 
 //@desc       Get all products
@@ -122,7 +121,7 @@ exports.productMainPhotoUpload = asyncHandler(async (req, res, next) => {
   }
 
   // Create custom filename
-  file.name = `photo_${product.id}${file.name}`;
+  file.name = `photo_${product.id}_main_${file.name}`;
 
   // remove old main photo if existing
   if (product.main_img) {
@@ -149,8 +148,9 @@ exports.productMainPhotoUpload = asyncHandler(async (req, res, next) => {
 //@desc       Upload product photos for product
 //@route      PUT /api/v1/products/:id/productphotos
 //@access     Private
-exports.productProductPhotosUpload = asyncHandler(async (req, res, next) => {
-  const product = await findByPk(req.params.id);
+exports.productSecondaryPhotosUpload = asyncHandler(async (req, res, next) => {
+
+  const product = await Product.findByPk(req.params.id);
 
   if (!product) {
     return next(new ErrorResponse(`Product not found with id of ${req.params.id}`, 401));
@@ -160,9 +160,24 @@ exports.productProductPhotosUpload = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Please upload a file`, 400));
   }
 
+  //   let keys = Object.keys(req.files);
   let photos = Object.keys(req.files);
 
-  for (photo of photos) {
+  // remove old product photos if existing
+  if (product.product_imgs) {
+    let oldPhotos = Object.values(product.product_imgs);
+    console.log(oldPhotos);
+    for (oldPhoto of oldPhotos) {
+      let deletePath = `${process.env.FILE_UPLOAD_PATH}/${oldPhoto}`;
+      fs.unlinkSync(deletePath);
+    }
+    await product.update({ product_imgs: [] });
+    // await product.product_imgs = [];
+  }
+
+  for (photoKeys of photos) {
+
+    let photo = req.files[photoKeys];
     // Make sure the image is a photo
     if (!photo.mimetype.startsWith('image')) {
       return next(new ErrorResponse(`Please upload an imagine file`, 400));
@@ -174,34 +189,22 @@ exports.productProductPhotosUpload = asyncHandler(async (req, res, next) => {
     }
 
     // Create custom filename
-    photo.name = `photo_${product.id}${photo.name}`;
-
-    // remove old product photos if existing
-    if (product.product_imgs) {
-      const oldPhotos = Object.values(product.product_imgs);
-      for (oldPhoto of oldPhotos) {
-        let deletePath = `${process.env.FILE_UPLOAD_PATH}/${oldPhoto}`;
-        fs.unlinkSync(deletePath);
-      }
-      product.product_imgs = [];
-    }
+    photo.name = `photo_${product.id}_product_${photo.name}`;
 
     photo.mv(`${process.env.FILE_UPLOAD_PATH}/${photo.name}`, async err => {
       if (err) {
         console.error(err);
         return next(new ErrorResponse(`Problem with file(s) upload`, 500));
       }
-      product.update({
-        product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
+      await product.update({
+        product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), photo.name)
       });
     });
   }
 
   res.status(200).json({
     success: true,
-    data: product.product_imgs
   });
-
 });;
 
 
@@ -224,17 +227,17 @@ exports.productProductPhotosUpload = asyncHandler(async (req, res, next) => {
 //   console.log(keys, '[ObjectKeys]');
 //   // const mainImage = req.files.main;
 
-//   // Remove old product photos from db/uploads if req.files includes a new ones
-//   if (product.product_imgs && keys.includes('product')) {
-//     const oldPhotos = Object.values(product.product_imgs);
-//     for (oldPhoto of oldPhotos) {
-//       let photoPath = `${process.env.FILE_UPLOAD_PATH}/${oldPhoto}`;
-//       fs.unlinkSync(photoPath);
-//     }
-//     console.log(oldPhotos, '[Old photos]');
-//     product.product_imgs = [];
-//     console.log(product.product_imgs);
+// // Remove old product photos from db/uploads if req.files includes a new ones
+// if (product.product_imgs && keys.includes('product')) {
+//   const oldPhotos = Object.values(product.product_imgs);
+//   for (oldPhoto of oldPhotos) {
+//     let photoPath = `${process.env.FILE_UPLOAD_PATH}/${oldPhoto}`;
+//     fs.unlinkSync(photoPath);
 //   }
+//   console.log(oldPhotos, '[Old photos]');
+//   product.product_imgs = [];
+//   console.log(product.product_imgs);
+// }
 
 //   // Remove old main_img from db/uploads if req.files includes a new one
 //   if (product.main_img && keys.includes('main')) {
