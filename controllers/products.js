@@ -156,14 +156,12 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
     if (counter === 0) {
       product.main_img = img.name;
       await product.save();
-    }
-    if (counter > 0) {
+    } else {
+      console.log(img.name, '[IMGNAME_____________________________________________________]');
       product.update({
         product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
       });
-      await product.save();
     }
-
   }
 
   res.status(200).json({
