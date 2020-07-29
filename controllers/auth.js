@@ -79,6 +79,23 @@ exports.logout = asyncHandler(async (req, res, next) => {
   });
 });
 
+
+//@desc       Update user details
+//@route      PUT /api/v1/auth/updatedetails
+//@access     Private
+exports.updateDetails = asyncHandler(async (req, res, next) => {
+  const user = await User.findByPk(req.user.id);
+
+  let columnsToUpdate = Object.keys(req.body);
+  for (val of columnsToUpdate) {
+    user[val] = req.body[val];
+  }
+  await user.save();
+});
+
+
+
+
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken();
