@@ -91,6 +91,11 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     user[val] = req.body[val];
   }
   await user.save();
+
+  res.status(200).json({
+    success: true,
+    data: user
+  });
 });
 
 
