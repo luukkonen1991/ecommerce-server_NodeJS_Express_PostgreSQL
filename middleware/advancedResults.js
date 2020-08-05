@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
-const TargetGroup = require('../models/target_group');
-const Product = require('../models/product');
+// const TargetGroup = require('../models/target_group');
+// const Product = require('../models/product');
+const Category = require('../models/category');
 
 const advancedResults = (model) => async (req, res, next) => {
 
@@ -26,6 +27,10 @@ const advancedResults = (model) => async (req, res, next) => {
     query.where.categoryId = req.query.categoryId;
   }
 
+  if (req.query.include === 'category') {
+    query.include = Category;
+  }
+
   if (req.query.price && req.query.gt) {
     query.where.price = { [Op.gt]: req.query.price };
   }
@@ -33,6 +38,8 @@ const advancedResults = (model) => async (req, res, next) => {
   if (req.query.price && req.query.lt) {
     query.where.price = { [Op.lt]: req.query.price };
   }
+
+  console.log(query);
 
   let finalQuery = model.findAll(query);
 

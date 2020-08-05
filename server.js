@@ -13,7 +13,9 @@ const sequelize = require('./utils/database');
 dotenv.config({ path: './config/config.env' });
 
 // MODELS
-// const Product = require('./models/product');
+const Product = require('./models/product');
+const Category = require('./models/category');
+const TargetGroup = require('./models/target_group');
 
 // ROUTE FILES
 const products = require('./routes/products');
@@ -51,6 +53,12 @@ app.use('/api/v1/target-groups', targetGroups);
 sequelize.sync().then(() => {
   console.log('SYNC WAS SUCCESSFUL');
 });
+
+Category.hasMany(Product);
+Product.belongsTo(Category);
+
+TargetGroup.hasMany(Product);
+Product.belongsTo(TargetGroup);
 
 app.use(errorHandler);
 
