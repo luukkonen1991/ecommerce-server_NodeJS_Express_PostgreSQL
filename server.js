@@ -54,6 +54,7 @@ sequelize.sync().then(() => {
   console.log('SYNC WAS SUCCESSFUL');
 });
 
+// MODEL RELATIONS
 Category.hasMany(Product);
 Product.belongsTo(Category);
 
