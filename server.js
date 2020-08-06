@@ -13,11 +13,14 @@ const sequelize = require('./utils/database');
 dotenv.config({ path: './config/config.env' });
 
 // MODELS
-// const Product = require('./models/product');
+const Product = require('./models/product');
+const Category = require('./models/category');
+const TargetGroup = require('./models/target_group');
 
 // ROUTE FILES
 const products = require('./routes/products');
 const auth = require('./routes/auth');
+const targetGroups = require('./routes/targetGroups');
 
 const app = express();
 
@@ -44,11 +47,19 @@ app.use(cors());
 // MOUNT ROUTES
 app.use('/api/v1/products', products);
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/target-groups', targetGroups);
 
 // SYNC MODELS
 sequelize.sync().then(() => {
   console.log('SYNC WAS SUCCESSFUL');
 });
+
+// MODEL RELATIONS
+Category.hasMany(Product);
+Product.belongsTo(Category);
+
+TargetGroup.hasMany(Product);
+Product.belongsTo(TargetGroup);
 
 app.use(errorHandler);
 
