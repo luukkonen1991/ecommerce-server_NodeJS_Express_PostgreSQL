@@ -1,10 +1,9 @@
 // const path = require('path');
-const fs = require('fs');
-const ErrorResponse = require('../utils/errorResponse');
-const asyncHandler = require('../middleware/async');
-const Product = require('../models/product');
-const sequelize = require('../utils/database');
-
+const fs = require("fs");
+const ErrorResponse = require("../utils/errorResponse");
+const asyncHandler = require("../middleware/async");
+const Product = require("../models/product");
+const sequelize = require("../utils/database");
 
 //@desc       Get all products
 //@route      GET /api/v1/products
@@ -20,11 +19,13 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findByPk(req.params.id);
 
   if (!product) {
-    return next(new ErrorResponse(`Product not found with id of ${req.params.id}`, 404));
+    return next(
+      new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
+    );
   }
   res.status(200).json({
     success: true,
-    data: product
+    data: product,
   });
 });
 
@@ -32,17 +33,16 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 //@route      POST /api/v1/products
 //@access     Private
 exports.createProduct = asyncHandler(async (req, res, next) => {
-
   const { title, description, category, price } = req.body;
   const product = await Product.create({
     title: title,
     description: description,
     category: category,
-    price: price
+    price: price,
   });
   res.status(201).json({
     success: true,
-    data: product
+    data: product,
   });
 });
 
@@ -53,18 +53,20 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findByPk(req.params.id);
 
   if (!product) {
-    return next(new ErrorResponse(`Product not found with id of ${req.params.id}`, 404));
+    return next(
+      new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
+    );
   }
 
   await Product.destroy({
     where: {
-      id: req.params.id
-    }
+      id: req.params.id,
+    },
   });
 
   res.status(200).json({
     success: true,
-    data: {}
+    data: {},
   });
 });
 
@@ -75,7 +77,9 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   let product = await Product.findByPk(req.params.id);
 
   if (!product) {
-    return next(new ErrorResponse(`Product not found with id of ${req.params.id}`, 404));
+    return next(
+      new ErrorResponse(`Product not found with id of ${req.params.id}`, 404)
+    );
   }
 
   let columnsToUpdate = Object.keys(req.body);
@@ -89,7 +93,7 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    data: product
+    data: product,
   });
 });
 
@@ -97,11 +101,12 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 //@route      PUT /api/v1/products/:id/mainphoto
 //@access     Private
 exports.productMainPhotoUpload = asyncHandler(async (req, res, next) => {
-
   const product = await Product.findByPk(req.params.id);
 
   if (!product) {
-    return next(new ErrorResponse(`Product not found with id of ${req.params.id}`, 401));
+    return next(
+      new ErrorResponse(`Product not found with id of ${req.params.id}`, 401)
+    );
   }
 
   if (!req.files) {
@@ -111,13 +116,18 @@ exports.productMainPhotoUpload = asyncHandler(async (req, res, next) => {
   const file = req.files.main;
 
   // Make sure the image is a photo
-  if (!file.mimetype.startsWith('image')) {
+  if (!file.mimetype.startsWith("image")) {
     return next(new ErrorResponse(`Please upload an imagine file`, 400));
   }
 
   // Check filesize
   if (file.size > process.env.MAX_FILE_UPLOAD) {
-    return next(new ErrorResponse(`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`, 400));
+    return next(
+      new ErrorResponse(
+        `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+        400
+      )
+    );
   }
 
   // Create custom filename
@@ -130,7 +140,7 @@ exports.productMainPhotoUpload = asyncHandler(async (req, res, next) => {
     fs.unlinkSync(deletePath);
   }
 
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
     if (err) {
       console.error(err);
       return next(new ErrorResponse(`Problem with file upload`, 500));
@@ -140,7 +150,7 @@ exports.productMainPhotoUpload = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: file.name
+      data: file.name,
     });
   });
 });
@@ -149,11 +159,12 @@ exports.productMainPhotoUpload = asyncHandler(async (req, res, next) => {
 //@route      PUT /api/v1/products/:id/productphotos
 //@access     Private
 exports.productSecondaryPhotosUpload = asyncHandler(async (req, res, next) => {
-
   const product = await Product.findByPk(req.params.id);
 
   if (!product) {
-    return next(new ErrorResponse(`Product not found with id of ${req.params.id}`, 401));
+    return next(
+      new ErrorResponse(`Product not found with id of ${req.params.id}`, 401)
+    );
   }
 
   if (!req.files) {
@@ -176,28 +187,36 @@ exports.productSecondaryPhotosUpload = asyncHandler(async (req, res, next) => {
   }
 
   for (photoKeys of photos) {
-
     let photo = req.files[photoKeys];
     // Make sure the image is a photo
-    if (!photo.mimetype.startsWith('image')) {
+    if (!photo.mimetype.startsWith("image")) {
       return next(new ErrorResponse(`Please upload an imagine file`, 400));
     }
 
     // Check filesize
     if (photo.size > process.env.MAX_FILE_UPLOAD) {
-      return next(new ErrorResponse(`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`, 400));
+      return next(
+        new ErrorResponse(
+          `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+          400
+        )
+      );
     }
 
     // Create custom filename
     photo.name = `photo_${product.id}_product_${photo.name}`;
 
-    photo.mv(`${process.env.FILE_UPLOAD_PATH}/${photo.name}`, async err => {
+    photo.mv(`${process.env.FILE_UPLOAD_PATH}/${photo.name}`, async (err) => {
       if (err) {
         console.error(err);
         return next(new ErrorResponse(`Problem with file(s) upload`, 500));
       }
       await product.update({
-        product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), photo.name)
+        product_imgs: sequelize.fn(
+          "array_append",
+          sequelize.col("product_imgs"),
+          photo.name
+        ),
       });
     });
   }
@@ -205,8 +224,7 @@ exports.productSecondaryPhotosUpload = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
   });
-});;
-
+});
 
 // exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
 
@@ -219,8 +237,6 @@ exports.productSecondaryPhotosUpload = asyncHandler(async (req, res, next) => {
 //   if (!req.files) {
 //     return next(new ErrorResponse(`Please upload a file(s)`, 400));
 //   }
-
-
 
 //   let keys = Object.keys(req.files);
 //   console.log(req.files, '[REQUEST FILES]');
@@ -267,58 +283,58 @@ exports.productSecondaryPhotosUpload = asyncHandler(async (req, res, next) => {
 //       return next(new ErrorResponse(`Image ${img.name} is larger than supported file size: ${process.env.MAX_FILE_UPLOAD}`, 400));
 //     }
 
-    // Create custom fileName
-    // mainImage.name = `photo_${product.id}${path.parse(mainImage.name).ext}`;
-  //   img.name = `photo_${product.id}_${img.name}`;
-  //   // console.log(img.name, '[NEWNAME]');
-  //   img.mv(`${process.env.FILE_UPLOAD_PATH}/${img.name}`, async err => {
-  //     if (err) {
-  //       console.error(err);
-  //       return next(new ErrorResponse(`Problem with file(s) upload`, 500));
-  //     }
-  //     if (counter === 0) {
-  //       product.main_img = img.name;
-  //       await product.save();
-  //     } else {
-  //       console.log(img.name, '[IMGNAME_____________________________________________________]');
-  //       product.update({
-  //         product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
-  //       });
-  //     }
-  //   });
-  // }
+// Create custom fileName
+// mainImage.name = `photo_${product.id}${path.parse(mainImage.name).ext}`;
+//   img.name = `photo_${product.id}_${img.name}`;
+//   // console.log(img.name, '[NEWNAME]');
+//   img.mv(`${process.env.FILE_UPLOAD_PATH}/${img.name}`, async err => {
+//     if (err) {
+//       console.error(err);
+//       return next(new ErrorResponse(`Problem with file(s) upload`, 500));
+//     }
+//     if (counter === 0) {
+//       product.main_img = img.name;
+//       await product.save();
+//     } else {
+//       console.log(img.name, '[IMGNAME_____________________________________________________]');
+//       product.update({
+//         product_imgs: sequelize.fn('array_append', sequelize.col('product_imgs'), img.name)
+//       });
+//     }
+//   });
+// }
 
 //   res.status(200).json({
 //     success: true,
 //   });
 
-  // jatka tästä
+// jatka tästä
 
-  // ------------------------------------------------------
+// ------------------------------------------------------
 
-  // // Make sure the image is a photo
-  // if (!mainImage.mimetype.startsWith('image')) {
-  //   return next(new ErrorResponse(`Please upload an image file(s)`, 400));
-  // }
+// // Make sure the image is a photo
+// if (!mainImage.mimetype.startsWith('image')) {
+//   return next(new ErrorResponse(`Please upload an image file(s)`, 400));
+// }
 
-  // // Check filesize
-  // if (mainImage.size > process.env.MAX_FILE_UPLOAD) {
-  //   return next(new ErrorResponse(`Please upload image(s) less than ${process.env.MAX_FILE_UPLOAD}`, 400));
-  // }
+// // Check filesize
+// if (mainImage.size > process.env.MAX_FILE_UPLOAD) {
+//   return next(new ErrorResponse(`Please upload image(s) less than ${process.env.MAX_FILE_UPLOAD}`, 400));
+// }
 
-  // // Create custom filename
-  // mainImage.name = `photo_${product.id}${path.parse(mainImage.name).ext}`;
-  // mainImage.mv(`${process.env.FILE_UPLOAD_PATH}/${mainImage.name}`, async err => {
-  //   if (err) {
-  //     console.error(err);
-  //     return next(new ErrorResponse(`Problem with file(s) upload`, 500));
-  //   }
-  //   product.mainImgUrl = mainImage.name;
-  //   await product.save();
+// // Create custom filename
+// mainImage.name = `photo_${product.id}${path.parse(mainImage.name).ext}`;
+// mainImage.mv(`${process.env.FILE_UPLOAD_PATH}/${mainImage.name}`, async err => {
+//   if (err) {
+//     console.error(err);
+//     return next(new ErrorResponse(`Problem with file(s) upload`, 500));
+//   }
+//   product.mainImgUrl = mainImage.name;
+//   await product.save();
 
-  //   res.status(200).json({
-  //     success: true,
-  //     data: mainImage.name
-  //   });
-  // });
+//   res.status(200).json({
+//     success: true,
+//     data: mainImage.name
+//   });
+// });
 // });
