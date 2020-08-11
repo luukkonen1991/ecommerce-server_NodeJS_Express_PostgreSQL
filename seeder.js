@@ -20,7 +20,7 @@ const products = JSON.parse(fs.readFileSync(`${__dirname}/_data/products.json`, 
 // Product.belongsTo(Category);
 
 // TargetGroup.hasMany(Product);
-// Product.belongsTo(TargetGroup);
+// Product.belongsTo(TargetGroup);n
 
 // IMPORT INTO DB
 const importData = async () => {
