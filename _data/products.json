@@ -5,6 +5,11 @@
 		"description": "description",
 		"price": 11.95,
 		"main_img": "photo_ebcc88fa-dc7b-4baa-bdad-383a4a84dc54_main_men_tShirts_regularFit_blue_productImg.png",
+		"product_imgs": [
+			"photo_ebcc88fa-dc7b-4baa-bdad-383a4a84dc54_product_men_tShirts_regularFit_beige_productImg.png",
+			"photo_ebcc88fa-dc7b-4baa-bdad-383a4a84dc54_product_men_tShirts_regularFit_white_productImg.png",
+			"photo_ebcc88fa-dc7b-4baa-bdad-383a4a84dc54_product_men_tShirts_regularFit_yellow_productImg.png"
+		],
 		"categoryId": "001baa5b-f4ec-47b7-8a17-584e03741604",
 		"targetGroupId": "001baa5b-f4ec-47b7-8a17-523e03741604"
 	},
