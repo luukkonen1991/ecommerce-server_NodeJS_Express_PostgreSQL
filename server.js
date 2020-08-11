@@ -52,6 +52,12 @@ app.use('/api/v1/target-groups', targetGroups);
 // SYNC MODELS
 sequelize.sync().then(() => {
   console.log('SYNC WAS SUCCESSFUL');
+  // Category.hasMany(Product);
+  // Product.belongsTo(Category);
+
+  // TargetGroup.hasMany(Product);
+  // Product.belongsTo(TargetGroup);
+  // console.log('RELATIONS ESTABLISHED');
 });
 
 // MODEL RELATIONS

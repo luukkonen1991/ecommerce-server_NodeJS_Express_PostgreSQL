@@ -15,12 +15,12 @@ const targetGroups = JSON.parse(fs.readFileSync(`${__dirname}/_data/target_group
 const categories = JSON.parse(fs.readFileSync(`${__dirname}/_data/categories.json`, 'utf-8'));
 const products = JSON.parse(fs.readFileSync(`${__dirname}/_data/products.json`, 'utf-8'));
 
-// // RELATIONS
-// Category.hasMany(Product);
-// Product.belongsTo(Category);
+// RELATIONS
+Category.hasMany(Product);
+Product.belongsTo(Category);
 
-// TargetGroup.hasMany(Product);
-// Product.belongsTo(TargetGroup);n
+TargetGroup.hasMany(Product);
+Product.belongsTo(TargetGroup);
 
 // IMPORT INTO DB
 const importData = async () => {

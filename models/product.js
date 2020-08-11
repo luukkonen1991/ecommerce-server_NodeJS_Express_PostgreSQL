@@ -1,6 +1,8 @@
 const { DataTypes, Sequelize } = require('sequelize');
 
 const sequelize = require('../utils/database');
+const Category = require('./category');
+const TargetGroup = require('./target_group');
 
 const Product = sequelize.define('product', {
   id: {
@@ -27,6 +29,20 @@ const Product = sequelize.define('product', {
   product_imgs: {
     type: DataTypes.ARRAY(DataTypes.STRING)
   }
+  // category_id: {
+  //   type: DataTypes.UUID,
+  //   references: {
+  //     model: Category
+  //   },
+  //   key: 'id'
+  // },
+  // target_group_id: {
+  //   type: DataTypes.UUID,
+  //   references: {
+  //     model: TargetGroup
+  //   },
+  //   key: 'id'
+  // }
   // ,
   // category: {
   //   type: DataTypes.ENUM('t-shirts', 'shirts', 'pants', 'shoes'),
